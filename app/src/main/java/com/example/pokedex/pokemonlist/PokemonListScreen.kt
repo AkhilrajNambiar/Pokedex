@@ -50,7 +50,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     // Surface is generally used to contain a Screen data
     Surface(
@@ -74,6 +75,7 @@ fun PokemonListScreen(
                     .padding(16.dp)
             ) {
                 // This function calls the function from our viewModel
+                viewModel.searchPokemonList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
@@ -113,6 +115,7 @@ fun SearchBar(
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
                     isHintDisplayed = !it.isFocused
+                    text = ""
                 }
         )
         if (isHintDisplayed) {
@@ -143,6 +146,9 @@ fun PokemonList(
     val isLoading by remember {
         viewModel.isLoading
     }
+    val isSearching by remember {
+        viewModel.isSearching
+    }
     LazyColumn(
         contentPadding = PaddingValues(16.dp)
     ) {
@@ -152,7 +158,7 @@ fun PokemonList(
             pokemonList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
                 viewModel.loadPokemonPaginated()
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
@@ -221,6 +227,8 @@ fun PokedexEntry(
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
+                        .fillMaxSize()
+                        .offset(0.dp, (-75).dp)
                         .scale(0.5f)
                         .align(CenterHorizontally)
                 )
