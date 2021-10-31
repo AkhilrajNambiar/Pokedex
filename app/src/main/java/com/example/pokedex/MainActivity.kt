@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pokedex.data.models.PokedexListEntry
+import com.example.pokedex.pokemonDetail.PokemonDetailScreen
 import com.example.pokedex.pokemonlist.PokemonListScreen
 import com.example.pokedex.pokemonlist.PokemonListViewModel
 import com.example.pokedex.ui.theme.JetpackComposePokedexTheme
@@ -60,6 +62,11 @@ class MainActivity : ComponentActivity() {
                         val pokemonName = remember {
                             it.arguments?.getString("pokemonName")
                         }
+                        
+                        PokemonDetailScreen(
+                            dominantColor = dominantColor,
+                            pokemonName = pokemonName?.lowercase() ?: "",
+                            navController = navController)
                     }
                 }
             }
